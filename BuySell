@@ -1,0 +1,71 @@
+# Leetcode in question: https://leetcode.com/problems/best-time-to-buy-and-sell-stock/description/
+class Solution(object):
+    def maxProfit(self, prices):
+        """
+        :type prices: List[int]
+        :rtype: int
+        
+        """
+
+        # https://stackoverflow.com/questions/2474015/getting-the-index-of-the-returned-max-or-min-item-using-max-min-on-a-list 
+        # Get index of min and max values
+        index_min = min(range(len(prices)), key=prices.__getitem__)  
+        index_max = max(range(len(prices)), key=prices.__getitem__)
+
+        if index_min == index_max:
+            return 0
+
+        # Case1 : min index < max index, ideal
+        def min_max (prices, index_min, index_max):
+
+            max_profit = 0
+
+            for i in range(index_min, index_max + 1):
+                if i>0 and prices[i] > prices[i-1]:
+                    continue
+                for j in range (i, index_max + 1):
+                    if prices[j] < prices[i] :
+                        continue
+                    elif j>0 and prices[j] <= prices[j-1]:
+                        continue
+                    elif prices[j] - prices [i] > max_profit:
+                        max_profit = prices[j] - prices[i]
+
+            return max_profit
+        
+        if index_min < index_max:
+            return min_max(prices, index_min, index_max)
+
+        # Case 2: index max < index min
+        """
+        Idea: get local min from after max index and run max_min on it. The rest follows
+        worse case algorithm.
+        """
+        def max_min(prices, index_min, index_max):
+            local_min = min(range(index_max + 1), key=prices.__getitem__)
+            # max_profit from before index max
+            max_profit = min_max (prices, local_min, index_max)
+
+            # Compare to max_profit after index max
+            local_min2 = min(range(index_max + 1, len(prices)), key=prices.__getitem__)
+            local_max2 = max(range(index_max + 1, len(prices)), key=prices.__getitem__)
+            if local_min2 < local_max2:
+                max_profit2 = min_max(prices, local_min2, local_max2)
+                return max(max_profit, max_profit2)
+            else:
+                for i in range (index_max, len(prices)):
+                    if i > 0 and prices[i] > prices[i-1]:
+                        continue
+                    for j in range (i, len(prices)):
+                        if prices[j] < prices[i]:
+                            continue
+                        elif j>0 and prices[j] < prices[j-1]:
+                            continue
+                        if prices[j] - prices[i] > max_profit:
+                            max_profit = prices[j] - prices[i]
+            return max_profit
+
+        if index_max < index_min:
+            return max_min(prices, index_min, index_max)
+        
+        return 0
