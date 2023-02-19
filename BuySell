@@ -38,7 +38,9 @@ class Solution(object):
             for i in range (index_max + 1, len_prices):
                 if prices[i] > prices[buy]:  
                     continue
-                buy = i
+                if i < len_prices - 1 and prices [i] > prices [i + 1]:
+                    continue
+                buy = i             
                 for j in range (i, len_prices):
                     if prices[j] < prices[i]:  # No profit
                         continue
@@ -47,7 +49,9 @@ class Solution(object):
                             max_profit1 = prices[j] - prices[i]
             return max_profit1
             
+
         if index_max < index_min:
             return high_low(prices, index_min, index_max)
         
         return 0
+
