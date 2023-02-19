@@ -14,42 +14,40 @@ class Solution(object):
         if index_min == index_max:
             return 0
         
+        def low_high(prices, index_min, index_max):
+            return prices[index_max] - prices[index_min]
+
         if index_min < index_max:
-            return prices[index_max] - prices [index_min]
+            return low_high(prices, index_min, index_max) 
 
         # Case 2: index max < index min, worse case
         """
         Idea: get local min from before max index --> maxprofit1
         Compare it to maxprofit2 --> 
         """
-        def max_min(prices, index_min, index_max):
+        def high_low(prices, index_min, index_max):
+            len_prices = len(prices)
             local_min = min(range(index_max + 1), key=prices.__getitem__)
             # max_profit from before index max
             max_profit1 = prices[index_max] - prices[local_min]
 
             # Compare to max_profit after index max
-            # Best case, the local min after index max is before local max after index max
-            local_min2 = min(range(index_max +1, len(prices)), key=prices.__getitem__)
-            local_max2 = max(range(index_max +1, len(prices)), key=prices.__getitem__)
-            if local_min2 < local_max2:
-                max_profit2 = prices[local_max2] - prices[local_min2]
-                return max(max_profit1, max_profit2)
-            
-            # Worst case, same as case 2
-            else:
-                for i in range (index_max +1, len(prices)):
-                    if i > 0 and prices[i] > prices[i-1]:  
+
+            buy = index_max + 1
+
+            for i in range (index_max + 1, len_prices):
+                if prices[i] > prices[buy]:  
+                    continue
+                buy = i
+                for j in range (i, len_prices):
+                    if prices[j] < prices[i]:  # No profit
                         continue
-                    for j in range (i, len(prices)):
-                        if prices[j] < prices[i]:  # No profit
-                            continue
-                        elif j>index_max + 1 and prices[j] < prices[j-1]:
-                            continue
+                    else: 
                         if prices[j] - prices[i] > max_profit1:
                             max_profit1 = prices[j] - prices[i]
             return max_profit1
-
+            
         if index_max < index_min:
-            return max_min(prices, index_min, index_max)
+            return high_low(prices, index_min, index_max)
         
         return 0
