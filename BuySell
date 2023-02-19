@@ -16,21 +16,10 @@ class Solution(object):
 
         # Case1 : min index < max index, ideal
         def min_max (prices, index_min, index_max):
-
-            max_profit = 0
-
-            for i in range(index_min, index_max + 1):
-                if i>0 and prices[i] > prices[i-1]:
-                    continue
-                for j in range (i, index_max + 1):
-                    if prices[j] < prices[i] :
-                        continue
-                    elif j>0 and prices[j] <= prices[j-1]:
-                        continue
-                    elif prices[j] - prices [i] > max_profit:
-                        max_profit = prices[j] - prices[i]
-
-            return max_profit
+            """
+            Idea: two pointers, starting from local min towards 
+            """
+            return max_profit = prices[index_max] - prices [index_min]
         
         if index_min < index_max:
             return min_max(prices, index_min, index_max)
