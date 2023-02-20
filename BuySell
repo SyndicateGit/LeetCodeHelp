@@ -13,45 +13,18 @@ class Solution(object):
 
         if index_min == index_max:
             return 0
-        
-        def low_high(prices, index_min, index_max):
-            return prices[index_max] - prices[index_min]
 
         if index_min < index_max:
-            return low_high(prices, index_min, index_max) 
+            return prices[index_max] - prices[index_min]
 
-        # Case 2: index max < index min, worse case
-        """
-        Idea: get local min from before max index --> maxprofit1
-        Compare it to maxprofit2 --> 
-        """
-        def high_low(prices, index_min, index_max):
-            len_prices = len(prices)
-            local_min = min(range(index_max + 1), key=prices.__getitem__)
-            # max_profit from before index max
-            max_profit1 = prices[index_max] - prices[local_min]
-
-            # Compare to max_profit after index max
-
-            buy = index_max + 1
-
-            for i in range (index_max + 1, len_prices):
-                if prices[i] > prices[buy]:  
-                    continue
-                if i < len_prices - 1 and prices [i] > prices [i + 1]:
-                    continue
-                buy = i             
-                for j in range (i, len_prices):
-                    if prices[j] < prices[i]:  # No profit
-                        continue
-                    else: 
-                        if prices[j] - prices[i] > max_profit1:
-                            max_profit1 = prices[j] - prices[i]
-            return max_profit1
-            
-
-        if index_max < index_min:
-            return high_low(prices, index_min, index_max)
         
-        return 0
+        # Case 2: index max < index min
+        min_price = float("Inf")
+        max_profit = 0
+
+        for price in prices:
+            min_price = min(min_price, price)
+            profit = price - min_price
+            max_profit = max(max_profit, profit)
+        return max_profit
 
